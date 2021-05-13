@@ -1,0 +1,26 @@
+legenda:
+Empty [] = Not in work
+[w] = Work in progress
+[x] = Finished
+
+Music vc [x] - used ffmpeg
+IP lookup [x] - used FreeGeoIP API
+Server stats [x]
+Captcha Verification [x] - used bytesio to store pics in memory
+Whois [x] - used YagPDB layout
+Proxies [x] - used proxies api
+Giveaways [x] - has quick and interactive mode
+Timer [x]
+Ticket tools [x]
+Calculator [x]
+Poll [x]
+Reminders [x]
+Reddit commands [x]
+Translate [x]
+Invitation system [w]
+Eco system []
+Meme tools []
+Level system []
+Multi-language compiler []
+Webhooks from reddit, twitter etc.. []
+Customized paginated help command []
