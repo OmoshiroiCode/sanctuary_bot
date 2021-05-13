@@ -1,0 +1,7 @@
+ffmpeg
+ffmpeg*
+*.exe
+__pycache__
+.upm
+poetry.lock
+pyproject.toml
