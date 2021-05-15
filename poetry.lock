@@ -291,6 +291,17 @@ version = "8.2.0"
 
 [[package]]
 category = "main"
+description = "Unofficial Piston API Wrapper for Python"
+name = "pistonapi"
+optional = false
+python-versions = "*"
+version = "1.0.1"
+
+[package.dependencies]
+requests = "*"
+
+[[package]]
+category = "main"
 description = "PRAW, an acronym for `Python Reddit API Wrapper`, is a python package that allows for simple access to reddit's API."
 name = "praw"
 optional = false
@@ -513,7 +524,7 @@ python-versions = "*"
 version = "2021.4.26"
 
 [metadata]
-content-hash = "5363ed56cb44286f2a48412522db82913e3bb147138aea17cad1738d67b6229c"
+content-hash = "f6824080aa8fcd7f37b523fb684405337f2db2fadac632036fe8cc85ca566417"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -791,6 +802,10 @@ pillow = [
     {file = "Pillow-8.2.0-pp37-pypy37_pp73-manylinux2010_x86_64.whl", hash = "sha256:22fd0f42ad15dfdde6c581347eaa4adb9a6fc4b865f90b23378aa7914895e120"},
     {file = "Pillow-8.2.0-pp37-pypy37_pp73-win32.whl", hash = "sha256:e98eca29a05913e82177b3ba3d198b1728e164869c613d76d0de4bde6768a50e"},
     {file = "Pillow-8.2.0.tar.gz", hash = "sha256:a787ab10d7bb5494e5f76536ac460741788f1fbce851068d73a87ca7c35fc3e1"},
+]
+pistonapi = [
+    {file = "pistonapi-1.0.1-py3-none-any.whl", hash = "sha256:9a88fad690cdfd679fa654c83fb8864dcc7779821c2d16d0326343388687dcae"},
+    {file = "pistonapi-1.0.1.tar.gz", hash = "sha256:22c43802bb4a62168e4a790e40a29c43825337cc2a6ebecf644ab15962033209"},
 ]
 praw = [
     {file = "praw-7.2.0-py3-none-any.whl", hash = "sha256:f8e9f1854368a833d09208ca6f0318220d488a0c6660ff5c38391e55f50f0aa9"},

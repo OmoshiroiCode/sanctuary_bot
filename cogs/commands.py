@@ -13,10 +13,9 @@ import string
 import asyncio
 from captcha.image import ImageCaptcha
 import praw
-
+from pistonapi import PistonAPI
 
 class cmds(commands.Cog):
-
   def __init__(self, bot):
     self.bot = bot
     self.cancelled = False
@@ -26,11 +25,18 @@ class cmds(commands.Cog):
                               password = os.environ['praw_pass'],
                               user_agent = "pythonpraw",
                               check_for_async=False)
+    self.piston = PistonAPI()
+
 
   # Prints a message if the bots connected and online (ready)
   @commands.Cog.listener()
   async def on_ready(self):
     print("Bot is online")
+
+  @commands.Cog.listener()
+  async def on_invite_create(self, invite):
+    print(invite.inviter)
+    print(invite.uses)
 
   # Kicks the user
   @commands.command()
@@ -46,18 +52,27 @@ class cmds(commands.Cog):
 
   # Unbans the user
   @commands.command()
-  async def unban(self, ctx, *, member):
+  async def unban(self, ctx, member):
     banned_users = await ctx.guild.bans()
-    member_name, member_discriminator = member.split("#")
+    if '#' in member:
+      member = member.split("#")
+      member_name = member[0]
+      member_discriminator = member[1]
+      member = member_name, + '#' + member_discriminator
+    elif member == int:
+      member = self.bot.fetch_user(member)
+
+    print(member)
 
     for ban_entry in banned_users:
       user = ban_entry.user
       usern = user.name + "#" + user.discriminator
-      if(user.name, user.discriminator) == (member_name, member_discriminator):
+      if usern == member:
         await ctx.guild.unban(user)
         print(f"{usern} has been unbanned.")
         await ctx.send(f"{usern} has been unbanned.")
-        return
+    else:
+      await ctx.send("**User isn't banned!**")
 
   # Says pong and then pings your response time
   @commands.command()
@@ -919,7 +934,7 @@ class cmds(commands.Cog):
     try:
       response = response["queryresult"]["pods"][1]["subpods"][0]["plaintext"]
     except KeyError:
-      return await ctx.send("`Didn't found that query!`")
+      return await ctx.send(f"{ctx.author.mention} `Didn't found that query!`")
 
     await ctx.send(f"{ctx.author.mention} `Output: {response}`")
 
@@ -961,13 +976,12 @@ class cmds(commands.Cog):
   async def reddit(self, ctx, subr: str=None):
     try:
       if subr is None:
-        subreddit = self.reddit.subreddit("memes")
+        return await ctx.send("**Please specify a subreddit ex: s.reddit memes**")
       else:
         subreddit = self.reddit.subreddit(f"{subr}")
-        if subreddit.over18:
-          if not ctx.channel.is_nsfw():
-            return await ctx.send("**This type of content isn't allowed here**")
-      top = subreddit.top(limit=50)
+        if subreddit.over18 and not ctx.channel.is_nsfw():
+          return await ctx.send("**This type of content isn't allowed here**")
+      top = subreddit.top(limit=5)
       all_subs = []
 
       for submission in top:
@@ -978,22 +992,16 @@ class cmds(commands.Cog):
       if random_sub.url.startswith("https://v") or random_sub.url.startswith("https://redgifs") or random_sub.url.startswith("https://gfycat") or random_sub.url.endswith(".gif") or random_sub.url.endswith(".gifv"):
         cnt = 0
         while True:
+          cnt += 1
           all_subs = []
-          top = subreddit.top(limit=50)
+          top = subreddit.top(limit=10)
           for submission in top:
             all_subs.append(submission)
           random_sub = random.choice(all_subs)
-          print(random_sub.url)
-          print(random_sub.url.startswith("https://v"))
-          print(random_sub.url.startswith("https://redgifs"))
-          print(random_sub.url.startswith("https://gfycat"))
-          print(random_sub.url.endswith(".gif"))
-          print(random_sub.url.endswith(".gifv"))
           if random_sub.url.startswith("https://v") and random_sub.url.startswith("https://redgifs") and random_sub.url.startswith("https://gfycat") and random_sub.url.endswith(".gif") and random_sub.url.endswith(".gifv") == False:
             break
           if cnt == 5:
             return await ctx.send("**Couldn't fetch picture**")
-          cnt += 1
 
       name = random_sub.title
       url = random_sub.url
@@ -1004,6 +1012,41 @@ class cmds(commands.Cog):
       await ctx.send(embed=embed)
     except:
       return await ctx.send("**Couldn't fetch subreddit**")
+
+  @commands.command()
+  async def execute(self, ctx, *, args):
+    if '```' != args[:3] and '```' != args[:-3]:
+      return await ctx.send("`Put your code in a code block`")
+
+    elif args[3].isspace():
+      return await ctx.send("`Please provide a programming language in the codeblock`")
+      
+    cnt = 2
+    for i in args[3:]:
+      cnt += 1
+      if i.isspace():
+        break
+
+    lang = args[3:cnt]
+    args = args[cnt+1:-3]
+
+    if len(args) > 1500:
+      return await ctx.send("`Code input is too large!`")
+
+    with open('./other/execlangs.txt', 'r') as file:
+      fcheck = False
+      for i in file.readlines():
+        lv = i.split(' ')
+        if lang == lv[0]:
+          execversion = lv[1][:-1]
+          fcheck = True
+      if fcheck == False:
+        return await ctx.send("`Please provide a valid programming language in the codeblock`")
+
+    
+    execcode = ''.join(self.piston.execute(language=lang, version=execversion, code=args))
+
+    await ctx.send(f"```Output:\n\n{execcode}\n```")
 
 
 

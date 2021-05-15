@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands
 import json
 import asyncio
-from random import randint
 
 class Tickets(commands.Cog):
   def __init__(self, bot):

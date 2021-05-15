@@ -383,7 +383,6 @@ async def on_member_join(member):
   cat = discord.utils.get(member.guild.categories, name='📊 Stats')
   catinv = discord.utils.get(member.guild.voice_channels, name='discord.gg/fXx7qC33bX')
   unverified = discord.utils.get(member.guild.roles, name='unverified')
-  print(unverified)
 
 
   try:
@@ -516,6 +515,9 @@ async def on_command_error(ctx, error):
 
   elif isinstance(error, commands.CommandOnCooldown):
     await ctx.send(error)
+
+  elif isinstance(error, commands.MissingRequiredArgument):
+    await ctx.send("`You are missing required arguments! Do s.help for more info`")
 
   else:
     raise error
