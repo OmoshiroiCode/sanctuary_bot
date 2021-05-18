@@ -219,8 +219,7 @@ class cmds(commands.Cog):
 
   @commands.command()
   async def showcogs(self, ctx):
-    cstr = '\n'
-    await ctx.send('All cogs are:\n' + '`' + cstr.join(self.bot.cogs) + '`')
+    await ctx.send('All cogs are:\n' + '`' + '\n'.join(self.bot.cogs) + '`')
 
   @commands.command()
   async def verify(self, ctx):
@@ -998,7 +997,7 @@ class cmds(commands.Cog):
           for submission in top:
             all_subs.append(submission)
           random_sub = random.choice(all_subs)
-          if random_sub.url.startswith("https://v") and random_sub.url.startswith("https://redgifs") and random_sub.url.startswith("https://gfycat") and random_sub.url.endswith(".gif") and random_sub.url.endswith(".gifv") == False:
+          if random_sub.url.startswith("https://v") and random_sub.url.startswith("https://www.redgifs") and random_sub.url.startswith("https://www.gfycat") and random_sub.url.endswith(".gif") and random_sub.url.endswith(".gifv") == False:
             break
           if cnt == 5:
             return await ctx.send("**Couldn't fetch picture**")
@@ -1033,18 +1032,10 @@ class cmds(commands.Cog):
     if len(args) > 1500:
       return await ctx.send("`Code input is too large!`")
 
-    with open('./other/execlangs.txt', 'r') as file:
-      fcheck = False
-      for i in file.readlines():
-        lv = i.split(' ')
-        if lang == lv[0]:
-          execversion = lv[1][:-1]
-          fcheck = True
-      if fcheck == False:
-        return await ctx.send("`Please provide a valid programming language in the codeblock`")
-
-    
-    execcode = ''.join(self.piston.execute(language=lang, version=execversion, code=args))
+    try:
+      execcode = ''.join(self.piston.execute(language=lang, version='*', code=args))
+    except:
+      return await ctx.send("`Please provide a valid programming language in the codeblock`")
 
     await ctx.send(f"```Output:\n\n{execcode}\n```")
 

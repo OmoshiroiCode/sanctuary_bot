@@ -2,6 +2,7 @@ legenda:
 Empty [] = Not in work
 [w] = Work in progress
 [x] = Finished
+[o] = On Hold
 
 Music vc [x] - used ffmpeg
 IP lookup [x] - used FreeGeoIP API
@@ -17,9 +18,10 @@ Poll [x]
 Reminders [x]
 Reddit commands [x]
 Translate [x]
-Invitation system [w]
+Invitation system [o]
 Multi-language compiler [x]
-On_message links deletion []
+Converters [o]
+On_message links deletion [w]
 Better Error handling []
 Eco system []
 Meme tools []

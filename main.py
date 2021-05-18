@@ -8,6 +8,9 @@ import json
 from dotenv import load_dotenv
 from other.languages import LANGUAGES
 
+# Loads .env file
+load_dotenv()
+
 # Permission for the bot to manage members.
 intents = discord.Intents.all()
 
@@ -16,6 +19,9 @@ bot = commands.Bot(command_prefix="s.", intents=intents, case_insensitive=True)
 
 # Cycles through the statuses
 status = cycle(["Status 1", "Status 2"])
+
+# Links blacklist
+blacklist = ["discord.gg", ".gg/", ". gg", ". gg/", ". gg /", "d.gg", "dsc.gg" "https", "http", "www.", "www .", ". com", ".com", ". nl", ".nl", ". org", ".org"]
 
 def get_greeting(bot, message):
   with open("jsons/greeting.json", "r") as f:
@@ -43,6 +49,13 @@ async def on_message(message):
     return
   if isinstance(message.channel, discord.channel.DMChannel):
       return
+  for link in blacklist:
+    contents = message.content.split()
+    if message.content.startswith(link) or message.content.endswith(link):
+      return await message.delete()
+    for content in contents:
+      if content.startswith(link) or content.endswith(link):
+        return await message.delete()
   if message.content.startswith("s.") == False:
     translator = googletrans.Translator()
     langtext = translator.detect(f'{message.content}').lang
@@ -130,7 +143,7 @@ async def change_status():
 
 @bot.command()
 async def showrole(ctx):
-  await ctx.send(f"{ctx.guild.roles}")
+  await ctx.send(f"{ctx.guild.roles.name}")
 
 @bot.event
 async def on_guild_join(guild):
@@ -570,5 +583,4 @@ for filename in os.listdir("./cogs"):
 
 
 # Run the bot with the given token
-load_dotenv()
 bot.run(os.getenv('TOKEN'))
