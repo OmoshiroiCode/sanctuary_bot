@@ -49,27 +49,30 @@ async def on_message(message):
     return
   if isinstance(message.channel, discord.channel.DMChannel):
       return
-  for link in blacklist:
-    contents = message.content.split()
-    if message.content.startswith(link) or message.content.endswith(link):
-      return await message.delete()
-    for content in contents:
-      if content.startswith(link) or content.endswith(link):
+  if message.content.startswith('s.play'):
+    pass
+  else:
+    for link in blacklist:
+      contents = message.content.split()
+      if message.content.startswith(link) or message.content.endswith(link):
         return await message.delete()
-  if message.content.startswith("s.") == False:
-    translator = googletrans.Translator()
-    langtext = translator.detect(f'{message.content}').lang
-    if langtext == "en" or langtext == "nl":
-      return
-    await message.delete()
-    translation = translator.translate(f'{message.content}').text
-    langname = LANGUAGES[langtext]
-    langname = langname[0].upper() + langname[1:]
-    langtext = langtext.upper()
-    transEmbed = discord.Embed(title="Translation", description=f"Language: {langname} ({langtext})", timestamp=datetime.datetime.utcnow(), color=0xDB2727)
-    transEmbed.add_field(name=f"{message.author.name}#{message.author.discriminator} Says", value=f"```{translation}```")
-    transEmbed.set_thumbnail(url=f"{message.author.avatar_url}")
-    await message.channel.send(embed=transEmbed)
+      for content in contents:
+        if content.startswith(link) or content.endswith(link):
+          return await message.delete()
+    if message.content.startswith("s.") == False:
+      translator = googletrans.Translator()
+      langtext = translator.detect(f'{message.content}').lang
+      if langtext == "en" or langtext == "nl":
+        return
+      await message.delete()
+      translation = translator.translate(f'{message.content}').text
+      langname = LANGUAGES[langtext]
+      langname = langname[0].upper() + langname[1:]
+      langtext = langtext.upper()
+      transEmbed = discord.Embed(title="Translation", description=f"Language: {langname} ({langtext})", timestamp=datetime.datetime.utcnow(), color=0xDB2727)
+      transEmbed.add_field(name=f"{message.author.name}#{message.author.discriminator} Says", value=f"```{translation}```")
+      transEmbed.set_thumbnail(url=f"{message.author.avatar_url}")
+      await message.channel.send(embed=transEmbed)
   await bot.process_commands(message)
 
 
